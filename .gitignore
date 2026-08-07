@@ -1,0 +1,42 @@
+# macOS
+.DS_Store
+
+# CMake build directories and generated files
+build/
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+compile_commands.json
+Makefile
+
+# C/C++ compiled artifacts
+*.o
+*.obj
+*.a
+*.so
+*.so.*
+*.dylib
+*.dll
+*.exe
+*.out
+*.d
+
+# Debugging and profiling artifacts
+*.dSYM/
+*.pdb
+*.ilk
+*.gcda
+*.gcno
+*.profraw
+
+# Editor and IDE user-specific files
+.idea/
+.vscode/settings.json
+.vscode/launch.json
+.vscode/*.code-workspace
+*.swp
+*.swo
+*~
+.vscode/tasks.json
+dependencies/include/*
