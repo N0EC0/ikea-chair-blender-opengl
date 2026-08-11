@@ -1,5 +1,5 @@
 /*
-    COMP371 2261 CX - Assignment 2 
+    COMP371 2261 CX - Assignment 3 
     Team members:
     - Nerina An 40310293 
     - Noemie Corneillier 40284815 
