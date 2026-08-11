@@ -140,18 +140,27 @@ int main() {
 
         // Initialize the matrices to their identity matrix
         glm::mat4 chairTransform = glm::mat4(1.0f);
+        glm::mat4 floorTransform = glm::mat4(1.0f);
+        glm::mat4 backWallTransform = glm::mat4(1.0f);
+        glm::mat4 rightWallTransform = glm::mat4(1.0f);
+        glm::mat4 model = glm::mat4(1.0f);
         glm::mat4 view = glm::mat4(1.0f);
         glm::mat4 projection = glm::mat4(1.0f);
 
-        // Translate, rotate and scale down the chair by 2 degrees on x axis to see the 3D effect of the pyramid
-        chairTransform = glm::translate(chairTransform, glm::vec3(0.0f, -0.5f, 0.0f));
-        chairTransform = glm::rotate(chairTransform, glm::radians(2.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-        chairTransform = glm::scale(chairTransform, glm::vec3(0.2f));
+        // Translate, rotate and scale down the world by 2 degrees on x axis
+        model = glm::translate(model, glm::vec3(0.0f, -0.5f, 0.0f));
+        model = glm::rotate(model, glm::radians(10.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(0.2f));
         
-        // Translate, rotate and scale the chair based from input
+        // Translate, rotate and scale only the chair based from input
         chairTransform = glm::translate(chairTransform, glm::vec3(state.distanceX, state.distanceY, 0.0f));
         chairTransform = glm::rotate(chairTransform, glm::radians(state.rotation), glm::vec3(0.0f, 1.0f, 0.0f));
         chairTransform = glm::scale(chairTransform, glm::vec3(state.scale, state.scale, state.scale));
+
+        // Unchanged transform matrix for floor and walls
+        floorTransform = glm::translate(floorTransform, glm::vec3(0.0f, 0.0f, 0.0f));
+        backWallTransform = glm::translate(backWallTransform, glm::vec3(0.0f, 0.0f, 0.0f));
+        rightWallTransform = glm::translate(rightWallTransform, glm::vec3(0.0f, 0.0f, 0.0f));
         
         // Create a view matrix to simulate camera movement
         view = glm::lookAt(state.cameraPos, state.cameraPos + state.cameraFront, state.cameraUp);
@@ -169,22 +178,28 @@ int main() {
         }
         else {
             projection = glm::ortho(-1.5f * aspect, 1.5f * aspect, -1.5f, 1.5f, 0.1f, 100.0f);
-            // model = glm::rotate(model, glm::radians(10.0f), glm::vec3(1.0f, 0.0f, 0.0f));
         }
 
         // Retrieve and pass the uniform locations for the transformation, view, and projection matrices
         // Using the function from Shader.h
-        shader.setMat4("model", chairTransform);
         shader.setMat4("view", view);
         shader.setMat4("projection", projection);
-        
+
+        glm::mat4 chairModel = model * chairTransform;
+        shader.setMat4("model", chairModel);
         // Draw the chair
         chair.Draw(shader);
         
         // Draw the environment based on input
         if (state.environment) {
+            glm::mat4 floorModel = model * floorTransform;
+            shader.setMat4("model", floorModel);
             floor.Draw(shader);
+            glm::mat4 backWallModel = model * backWallTransform;
+            shader.setMat4("model", backWallModel);
             backWall.Draw(shader);
+            glm::mat4 rightWallModel = model * rightWallTransform;
+            shader.setMat4("model", rightWallModel);
             rightWall.Draw(shader);
         }
 
@@ -269,8 +284,7 @@ void processInput(GLFWwindow* window, AppState& state)
     if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
         state.cameraPos -= cameraSpeed * state.cameraFront;
     if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-        state.cameraPos -= glm::normalize(glm::cross(state.cameraFront, state.cameraUp)) * cameraSpeed;
-    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
         state.cameraPos += glm::normalize(glm::cross(state.cameraFront, state.cameraUp)) * cameraSpeed;
+    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+        state.cameraPos -= glm::normalize(glm::cross(state.cameraFront, state.cameraUp)) * cameraSpeed;
 }
-
