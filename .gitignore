@@ -12,7 +12,6 @@ Makefile
 
 # C/C++ compiled artifacts
 *.o
-*.obj
 *.a
 *.so
 *.so.*
