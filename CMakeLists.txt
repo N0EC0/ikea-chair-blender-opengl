@@ -9,7 +9,6 @@ add_executable(A3
     src/main.cpp
     src/Shader.cpp
     src/stb_image.cpp
-    src/Texture.cpp
 )
 
 target_include_directories(A3 PRIVATE
@@ -18,7 +17,7 @@ target_include_directories(A3 PRIVATE
     "${CMAKE_SOURCE_DIR}/dependencies/include" #for local repo
 )
 
-file(COPY ${CMAKE_SOURCE_DIR}/Resources
+file(COPY ${CMAKE_SOURCE_DIR}/resources
      DESTINATION ${CMAKE_BINARY_DIR})
 
 # macOS configurations -----------------------------------------------------------
@@ -26,6 +25,7 @@ if (APPLE)
     target_link_libraries(A3 PRIVATE
         "${CMAKE_SOURCE_DIR}/dependencies/lib/libGLEW.2.3.1.dylib"
         "${CMAKE_SOURCE_DIR}/dependencies/lib/libglfw.3.4.dylib"
+        "${CMAKE_SOURCE_DIR}/dependencies/lib/libassimp.6.0.5.dylib"
         "-framework OpenGL"
         "-framework Cocoa"
         "-framework IOKit"
