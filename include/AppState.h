@@ -18,7 +18,10 @@ struct AppState
     bool perspective = true;
     
     // flag to display wireframe of filled polygon
-    bool wireframe = false;
+    bool wireframe = true;
+
+    // flag to draw environment(floor and walls)
+    bool environment = false;
 
     // stores the initial moving distance 
     float distanceX = 0.0f;
@@ -28,7 +31,7 @@ struct AppState
     float rotation = 0.0f;
 
     // stores the initial scaling factor 
-    float depthScale = 1.0f;
+    float scale = 1.0f;
 
     // time between current frame and last frame
     float deltaTime = 0.0f;

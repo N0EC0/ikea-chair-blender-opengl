@@ -151,7 +151,7 @@ int main() {
         // Translate, rotate and scale the chair based from input
         chairTransform = glm::translate(chairTransform, glm::vec3(state.distanceX, state.distanceY, 0.0f));
         chairTransform = glm::rotate(chairTransform, glm::radians(state.rotation), glm::vec3(0.0f, 1.0f, 0.0f));
-        chairTransform = glm::scale(chairTransform, glm::vec3(1.0f, 1.0f, state.depthScale));
+        chairTransform = glm::scale(chairTransform, glm::vec3(state.scale, state.scale, state.scale));
         
         // Create a view matrix to simulate camera movement
         view = glm::lookAt(state.cameraPos, state.cameraPos + state.cameraFront, state.cameraUp);
@@ -178,11 +178,15 @@ int main() {
         shader.setMat4("view", view);
         shader.setMat4("projection", projection);
         
-        // Draw the objects
+        // Draw the chair
         chair.Draw(shader);
-        floor.Draw(shader);
-        backWall.Draw(shader);
-        rightWall.Draw(shader);
+        
+        // Draw the environment based on input
+        if (state.environment) {
+            floor.Draw(shader);
+            backWall.Draw(shader);
+            rightWall.Draw(shader);
+        }
 
         // Swap buffers and poll IO events (keys pressed/released)
         glfwSwapBuffers(window);
@@ -219,11 +223,17 @@ void processInput(GLFWwindow* window, AppState& state)
     if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS) 
         state.wireframe = false;
 
-	// P and O keys to switch between perspective and orthogonal projections
-    if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) 
-        state.perspective = true;   
+    // 3 - 4 keys to toggle to see chair only or with floor and walls
+    if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS) 
+        state.environment = true;
+    if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS) 
+        state.environment = false;    
+
+	// O key to switch between perspective and orthogonal projections
     if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS) 
-        state.perspective = false;
+        state.perspective = false;   
+    if (glfwGetKey(window, GLFW_KEY_O) == GLFW_RELEASE) 
+        state.perspective = true;
 
 	// W, A, S, D keys to move the object in the scene
     float movementSpeed = 3.5f * state.deltaTime;
@@ -245,12 +255,13 @@ void processInput(GLFWwindow* window, AppState& state)
 
 	// R, F keys to scale the object in the scene
     if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) 
-        state.depthScale += 0.05f;
+        state.scale += 0.01f;
     if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
-        state.depthScale -= 0.05f;
-        if (state.depthScale <= 0.5f)
-            state.depthScale = 0.5f; // So it does not flatten in 2D
+        state.scale -= 0.01f;
+        if (state.scale <= 0.05f)
+            state.scale = 0.05f; // minimum treshold 
     }
+
 	// Arrow keys to move the camera in the scene
     float cameraSpeed = 2.0f * state.deltaTime;
     if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
