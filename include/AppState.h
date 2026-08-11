@@ -9,9 +9,6 @@ struct AppState
     int framebufferWidth = 1000;
     int framebufferHeight = 1000;
 
-    // stores how much we're seeing of either texture
-    float mixValue = 0.0f;
-
     // camera position and orientation
     glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
     glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
@@ -19,6 +16,7 @@ struct AppState
 
     // flag to display different projections
     bool perspective = true;
+    
     // flag to display wireframe of filled polygon
     bool wireframe = false;
 
@@ -28,10 +26,6 @@ struct AppState
 
     // stores the initial rotation angle 
     float rotation = 0.0f;
-    float targetRotation = 0.0f;
-    float rotationSpeed = 60.0f; // degrees per second so 0.5 seconds per turn
-    bool qWasPressed = false;
-    bool eWasPressed = false;
 
     // stores the initial scaling factor 
     float depthScale = 1.0f;
