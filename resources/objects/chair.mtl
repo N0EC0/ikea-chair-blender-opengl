@@ -9,5 +9,5 @@ Ni 1.500000
 d 1.000000
 illum 2
 map_Kd chair_diffuse.jpg
-map_Ns roughness.jpg
-map_Bump -bm 1.000000 normal.jpg
+map_Ns chair_roughness.jpg
+map_Bump -bm 1.000000 chair_normal.jpg
