@@ -2,8 +2,6 @@
 #define MESH_H
 
 #include <glm/glm.hpp>
-// #include <glm/gtc/matrix_transform.hpp>
-// #include <shader.h>
 
 #include <string>
 #include <vector>
@@ -22,12 +20,6 @@ struct ModelTexture {
 
 class Mesh {
     public:
-        // mesh Data
-        std::vector<Vertex>       vertices;
-        std::vector<unsigned int> indices;
-        std::vector<ModelTexture> textures;
-        unsigned int VAO;
-
         // constructor
         Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<ModelTexture> textures);
 
@@ -35,6 +27,13 @@ class Mesh {
         void Draw();
 
     private:
+        // mesh Data
+        std::vector<Vertex>       vertices;
+        std::vector<unsigned int> indices;
+        std::vector<ModelTexture> textures;
+        
+        unsigned int VAO;
+        
         // render data 
         unsigned int VBO, EBO;
 

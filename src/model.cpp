@@ -1,8 +1,7 @@
 #include <GL/glew.h> 
-
 #include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 
+#include <iostream>
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 
@@ -66,8 +65,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
     std::vector<ModelTexture> textures;
 
     // walk through each of the mesh's vertices
-    for (unsigned int i = 0; i < mesh->mNumVertices; i++)
-    {
+    for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
         Vertex vertex;
         glm::vec3 vector; // we declare a placeholder vector since assimp uses its own vector class that doesn't directly convert to glm's vec3 class so we transfer the data to this placeholder glm::vec3 first.
         // positions
@@ -121,7 +119,7 @@ std::vector<ModelTexture> Model::loadMaterialTextures(aiMaterial* mat, aiTexture
         bool skip = false;
         for (unsigned int j = 0; j < textures_loaded.size(); j++)
         {
-            if (std::strcmp(textures_loaded[j].path.data(), str.C_Str()) == 0)
+            if (textures_loaded[j].path == str.C_Str())
             {
                 textures.push_back(textures_loaded[j]);
                 skip = true; // a texture with the same filepath has already been loaded, continue to next one. (optimization)

@@ -2,17 +2,11 @@
 #define MODEL_H
 
 #include <mesh.h>
-#include <shader.h>
-
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <iostream>
-#include <map>
-#include <vector>
-
 #include <assimp/scene.h>
 #include <stb_image.h>
+
+#include <string>
+#include <vector>
 
 class Model {
 public:
