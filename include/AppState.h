@@ -7,7 +7,7 @@ struct AppState
 {
     // Framebuffer window dimension for accurate aspect ratio
     int framebufferWidth = 1000;
-    int framebufferHeight = 1000;
+    int framebufferHeight = 800;
 
     // camera position and orientation
     glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
