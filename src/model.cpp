@@ -30,7 +30,7 @@ void Model::Draw() const {
 }
 
 // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
-void Model::loadModel(std::string const& path) {
+void Model::loadModel(const std::string& path) {
     // read file via ASSIMP
     Assimp::Importer importer;
 	// flags for post-processing
