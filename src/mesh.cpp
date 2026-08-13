@@ -17,13 +17,9 @@ Mesh::~Mesh() {
     release();
 }
 
-Mesh::Mesh(Mesh&& other) noexcept
-    : VAO(other.VAO),
-      VBO(other.VBO),
-      EBO(other.EBO),
-      textureID(other.textureID),
-      indexCount(other.indexCount)
-{
+Mesh::Mesh(Mesh&& other) 
+    noexcept: VAO(other.VAO), VBO(other.VBO), EBO(other.EBO), 
+    textureID(other.textureID), indexCount(other.indexCount) {
     other.VAO = 0;
     other.VBO = 0;
     other.EBO = 0;
@@ -31,8 +27,7 @@ Mesh::Mesh(Mesh&& other) noexcept
     other.indexCount = 0;
 }
 
-Mesh& Mesh::operator=(Mesh&& other) noexcept
-{
+Mesh& Mesh::operator=(Mesh&& other) noexcept {
     if (this != &other) {
         release();
 
@@ -64,9 +59,9 @@ void Mesh::Draw() const {
 // initializes all the buffer objects/arrays
 void Mesh::setupMesh(
     const std::vector<Vertex>& vertices,
-    const std::vector<unsigned int>& indices
-) {
-    // create buffers/arrays
+    const std::vector<unsigned int>& indices) {
+    
+        // create buffers/arrays
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
@@ -93,14 +88,11 @@ void Mesh::setupMesh(
     glBindVertexArray(0);
 }
 
-void Mesh::release()
-{
+void Mesh::release() {
     if (EBO != 0)
         glDeleteBuffers(1, &EBO);
-
     if (VBO != 0)
         glDeleteBuffers(1, &VBO);
-
     if (VAO != 0)
         glDeleteVertexArrays(1, &VAO);
 

@@ -187,14 +187,6 @@ int main() {
             const glm::mat4 viewProjection = projection * view;
             shader.setMat4("mvp", viewProjection * model * chairTransform);
 
-            // Retrieve and pass the uniform locations for the view, and projection matrices
-            // Using the function from Shader.h
-            // shader.setMat4("view", view);
-            // shader.setMat4("projection", projection);
-
-            // Retrieve and pass the uniform location for the model matrix of the chair
-            // glm::mat4 chairModel = model * chairTransform;
-            // shader.setMat4("model", chairModel);
             chair.Draw();
             
             // Draw the environment based on input

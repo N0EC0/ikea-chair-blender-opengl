@@ -32,6 +32,7 @@ private:
     void processNode(aiNode* node, const aiScene* scene);
     Mesh processMesh(aiMesh* mesh, const aiScene* scene);
     
-    unsigned int loadDiffuseTexture(aiMaterial* material);};
+    unsigned int loadDiffuseTexture(aiMaterial* material);
+};
 
 #endif

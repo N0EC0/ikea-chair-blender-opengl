@@ -3,7 +3,6 @@
 
 #include <glm/glm.hpp>
 
-// #include <string>
 #include <vector>
 
 struct Vertex {
@@ -12,11 +11,6 @@ struct Vertex {
     // texCoords
     glm::vec2 TexCoords;
 };
-
-// struct ModelTexture {
-//     unsigned int id;
-//     std::string path;
-// };
 
 class Mesh {
     public:
