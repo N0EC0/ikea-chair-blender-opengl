@@ -11,7 +11,6 @@
     
     On macOS:
     cmake -S . -B build  
-    
  
     Build and run with VS on Windows:
 	On first run: File -> Open CMake Project -> select the CMakeLists.txt file -> Build -> Run
@@ -22,6 +21,7 @@
 
 	This project was made with the help of the following tutorials:
 	https://learnopengl.com/Getting-started/Hello-Triangle
+    https://learnopengl.com/Getting-started/Shaders
 	https://learnopengl.com/Getting-started/Camera
     https://learnopengl.com/Model-Loading/Assimp
     https://learnopengl.com/Model-Loading/Mesh
