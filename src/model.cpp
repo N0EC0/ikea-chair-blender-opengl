@@ -1,11 +1,12 @@
 #include <GL/glew.h> 
 #include <glm/glm.hpp>
 
-#include <iostream>
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 
 #include <model.h>
+
+#include <iostream>
 
 unsigned int TextureFromFile(const char* path, const std::string& directory);
 
@@ -14,9 +15,17 @@ Model::Model(std::string const& path) {
     loadModel(path);
 }
 
+// Desctructor
+Model::~Model() {
+    for (const ModelTexture& texture : textures_loaded) {
+        if (texture.id != 0)
+            glDeleteTextures(1, &texture.id);
+    }
+}
+
 // draws the model, and thus all its meshes
-void Model::Draw() {
-    for (Mesh& mesh : meshes)
+void Model::Draw() const {
+    for (const Mesh& mesh : meshes)
         mesh.Draw();
 }
 
@@ -62,7 +71,6 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
     // data to fill
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
-    std::vector<ModelTexture> textures;
 
     // walk through each of the mesh's vertices
     for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
@@ -97,45 +105,44 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
             indices.push_back(face.mIndices[j]);
     }
     // process materials
-    aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+    unsigned int textureID = 0;
 
-    // diffuse maps
-    std::vector<ModelTexture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE);
-    textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+    if (mesh->mMaterialIndex < scene->mNumMaterials) {
+        aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
-    // return a mesh object created from the extracted mesh data
-    return Mesh(vertices, indices, textures);
+        textureID = loadDiffuseTexture(material);
+    }
+
+    return Mesh(vertices, indices, textureID);
 }
 
-// checks all material textures of a given type and loads the textures if they're not loaded yet.
-// the required info is returned as a Texture struct.
-std::vector<ModelTexture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type) {
-    std::vector<ModelTexture> textures;
-    for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
-    {
-        aiString str;
-        mat->GetTexture(type, i, &str);
-        // check if texture was loaded before and if so, continue to next iteration: skip loading a new texture
-        bool skip = false;
-        for (unsigned int j = 0; j < textures_loaded.size(); j++)
-        {
-            if (textures_loaded[j].path == str.C_Str())
-            {
-                textures.push_back(textures_loaded[j]);
-                skip = true; // a texture with the same filepath has already been loaded, continue to next one. (optimization)
-                break;
-            }
-        }
-        if (!skip)
-        {   // if texture hasn't been loaded already, load it
-            ModelTexture texture;
-            texture.id = TextureFromFile(str.C_Str(), this->directory);
-            texture.path = str.C_Str();
-            textures.push_back(texture);
-            textures_loaded.push_back(texture);  // store it as texture loaded for entire model, to ensure we won't unnecessary load duplicate textures.
-        }
+unsigned int Model::loadDiffuseTexture(aiMaterial* material) {
+    if (material->GetTextureCount(aiTextureType_DIFFUSE) == 0)
+        return 0;
+
+    aiString path;
+
+    if (material->GetTexture(aiTextureType_DIFFUSE, 0, &path) != AI_SUCCESS) {
+        return 0;
     }
-    return textures;
+
+    // Reuse the texture if it was already loaded by this model.
+    for (const ModelTexture& loadedTexture : textures_loaded) {
+        if (loadedTexture.path == path.C_Str())
+            return loadedTexture.id;
+    }
+
+    const unsigned int textureID =
+        TextureFromFile(path.C_Str(), directory);
+
+    if (textureID != 0) {
+        textures_loaded.push_back({
+            textureID,
+            path.C_Str()
+        });
+    }
+
+    return textureID;
 }
 
 unsigned int TextureFromFile(const char* path, const std::string& directory) {

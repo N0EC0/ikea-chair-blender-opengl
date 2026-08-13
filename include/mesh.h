@@ -3,7 +3,7 @@
 
 #include <glm/glm.hpp>
 
-#include <string>
+// #include <string>
 #include <vector>
 
 struct Vertex {
@@ -13,32 +13,47 @@ struct Vertex {
     glm::vec2 TexCoords;
 };
 
-struct ModelTexture {
-    unsigned int id;
-    std::string path;
-};
+// struct ModelTexture {
+//     unsigned int id;
+//     std::string path;
+// };
 
 class Mesh {
     public:
         // constructor
-        Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<ModelTexture> textures);
+        Mesh(
+            const std::vector<Vertex>& vertices,
+            const std::vector<unsigned int>& indices,
+            unsigned int texture
+        );
+
+        ~Mesh();
+
+        // OpenGL handles must not be copied
+        Mesh(const Mesh&) = delete;
+        Mesh& operator=(const Mesh&) = delete;
+
+        // Required because Model stores meshes in a vector
+        Mesh(Mesh&& other) noexcept;
+        Mesh& operator=(Mesh&& other) noexcept;
 
         // render the mesh
-        void Draw();
+        void Draw() const;
 
-    private:
-        // mesh Data
-        std::vector<Vertex>       vertices;
-        std::vector<unsigned int> indices;
-        std::vector<ModelTexture> textures;
+    private:      
+        unsigned int VAO = 0;
+        unsigned int VBO = 0;
+        unsigned int EBO = 0;
         
-        unsigned int VAO;
-        
-        // render data 
-        unsigned int VBO, EBO;
+        unsigned textureID = 0;
+        unsigned int indexCount = 0;
 
-        // initializes all the buffer objects/arrays
-        void setupMesh();
+        void setupMesh(
+            const std::vector<Vertex>& vertices,
+            const std::vector<unsigned int>& indices
+        );
+
+        void release();
 };
 
 #endif

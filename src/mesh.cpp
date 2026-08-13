@@ -3,34 +3,76 @@
 
 #include <mesh.h>
 
-// constructor
-Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<ModelTexture> textures) {
-    this->vertices = vertices;
-    this->indices = indices;
-    this->textures = textures;
+#include <cstddef>
+#include <utility>
 
-	// now that we have all the required data, set the vertex buffers and its attribute pointers.
-    Mesh::setupMesh();
+// constructor
+Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, unsigned int texture)
+    : textureID(texture), indexCount(static_cast<unsigned int>(indices.size())) {
+    setupMesh(vertices, indices);
+}
+
+// Destructor
+Mesh::~Mesh() {
+    release();
+}
+
+Mesh::Mesh(Mesh&& other) noexcept
+    : VAO(other.VAO),
+      VBO(other.VBO),
+      EBO(other.EBO),
+      textureID(other.textureID),
+      indexCount(other.indexCount)
+{
+    other.VAO = 0;
+    other.VBO = 0;
+    other.EBO = 0;
+    other.textureID = 0;
+    other.indexCount = 0;
+}
+
+Mesh& Mesh::operator=(Mesh&& other) noexcept
+{
+    if (this != &other) {
+        release();
+
+        VAO = other.VAO;
+        VBO = other.VBO;
+        EBO = other.EBO;
+        textureID = other.textureID;
+        indexCount = other.indexCount;
+
+        other.VAO = 0;
+        other.VBO = 0;
+        other.EBO = 0;
+        other.textureID = 0;
+        other.indexCount = 0;
+    }
+
+    return *this;
 }
 
 void Mesh::Draw() {
     glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, textureID);
 
-    glBindTexture(GL_TEXTURE_2D, textures.empty() ? 0 : textures[0].id);
     glBindVertexArray(VAO);
-    glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(indices.size()), GL_UNSIGNED_INT, nullptr);
+    glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, nullptr);
     glBindVertexArray(0);
 }
 
 // initializes all the buffer objects/arrays
-void Mesh::setupMesh()
-{
+void Mesh::setupMesh(
+    const std::vector<Vertex>& vertices,
+    const std::vector<unsigned int>& indices
+) {
     // create buffers/arrays
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
 
     glBindVertexArray(VAO);
+
     // load data into vertex buffers
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     // A great thing about structs is that their memory layout is sequential for all its items.
@@ -44,9 +86,25 @@ void Mesh::setupMesh()
     // set the vertex attribute pointers
     // vertex Positions
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), nullptr);
     // vertex texture coords
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
     glBindVertexArray(0);
+}
+
+void Mesh::release()
+{
+    if (EBO != 0)
+        glDeleteBuffers(1, &EBO);
+
+    if (VBO != 0)
+        glDeleteBuffers(1, &VBO);
+
+    if (VAO != 0)
+        glDeleteVertexArrays(1, &VAO);
+
+    EBO = 0;
+    VBO = 0;
+    VAO = 0;
 }
