@@ -118,6 +118,11 @@ int main() {
     Model backWall("resources/objects/backWall.obj");
     Model rightWall("resources/objects/rightWall.obj");
     
+    // Activate the shader program
+    shader.use();
+
+    glUniform1i(glGetUniformLocation(shader.ID, "texture_diffuse1"),0);
+
     // Render loop
     while (!glfwWindowShouldClose(window)) {
         
@@ -135,9 +140,6 @@ int main() {
         glClearColor(0.1f, 0.1f, 0.0f, 1.0f);
         // Clear the color and depth buffer
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);           
-        
-        // Activate the shader program
-        shader.use();
 
         // Set the polygon mode to wireframe or fill based on the edges flag
         if (state.wireframe) {
@@ -156,7 +158,7 @@ int main() {
         glm::mat4 view = glm::mat4(1.0f);
         glm::mat4 projection = glm::mat4(1.0f);
 
-        // Inititial adjustement: Translate, rotate and scale down the world
+        // Initial adjustement: Translate, rotate and scale down the world
         model = glm::translate(model, glm::vec3(0.0f, -0.5f, 0.0f));
         model = glm::rotate(model, glm::radians(10.0f), glm::vec3(1.0f, 0.0f, 0.0f));
         model = glm::scale(model, glm::vec3(0.2f));
@@ -197,20 +199,20 @@ int main() {
 		// Retrieve and pass the uniform location for the model matrix of the chair
         glm::mat4 chairModel = model * chairTransform;
         shader.setMat4("model", chairModel);
-        chair.Draw(shader);
+        chair.Draw();
         
         // Draw the environment based on input
         if (state.environment) {
 			// Draw the floor and walls with their respective transformations
             glm::mat4 floorModel = model * floorTransform;
             shader.setMat4("model", floorModel);
-            floor.Draw(shader);
+            floor.Draw();
             glm::mat4 backWallModel = model * backWallTransform;
             shader.setMat4("model", backWallModel);
-            backWall.Draw(shader);
+            backWall.Draw();
             glm::mat4 rightWallModel = model * rightWallTransform;
             shader.setMat4("model", rightWallModel);
-            rightWall.Draw(shader);
+            rightWall.Draw();
         }
 
         // Swap buffers and poll IO events (keys pressed/released)

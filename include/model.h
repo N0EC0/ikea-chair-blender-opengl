@@ -21,13 +21,12 @@ public:
     std::vector<ModelTexture> textures_loaded;	
     std::vector<Mesh>    meshes;
     std::string directory;
-    bool gammaCorrection;
 
     // constructor, expects a filepath to a 3D model.
-    Model(std::string const& path, bool gamma = false);
+    Model(std::string const& path);
 
     // draws the model, and thus all its meshes
-    void Draw(Shader& shader);
+    void Draw();
 
 private:
     // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
@@ -40,7 +39,7 @@ private:
 
     // checks all material textures of a given type and loads the textures if they're not loaded yet.
     // the required info is returned as a Texture struct.
-    std::vector<ModelTexture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName);
+    std::vector<ModelTexture> loadMaterialTextures(aiMaterial* mat, aiTextureType type);
 };
 
 #endif
