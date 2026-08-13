@@ -34,7 +34,6 @@
 #include <GLFW/glfw3.h>
 
 #include <glm/glm.hpp>
-#include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <shader.h>
@@ -123,8 +122,8 @@ int main() {
         // Activate the shader program
         shader.use();
 
-        glUniform1i(glGetUniformLocation(shader.ID, "texture_diffuse1"),0);
-
+        shader.setInt("texture_diffuse1", 0);
+        
         // Render loop
         while (!glfwWindowShouldClose(window)) {
             
@@ -153,9 +152,6 @@ int main() {
 
             // Initialize the matrices to their identity matrix
             glm::mat4 chairTransform = glm::mat4(1.0f);
-            glm::mat4 floorTransform = glm::mat4(1.0f);
-            glm::mat4 backWallTransform = glm::mat4(1.0f);
-            glm::mat4 rightWallTransform = glm::mat4(1.0f);
             glm::mat4 model = glm::mat4(1.0f);
             glm::mat4 view = glm::mat4(1.0f);
             glm::mat4 projection = glm::mat4(1.0f);
@@ -168,13 +164,8 @@ int main() {
             // Translate, rotate and scale only the chair based from input
             chairTransform = glm::translate(chairTransform, glm::vec3(state.distanceX, state.distanceY, 0.0f));
             chairTransform = glm::rotate(chairTransform, glm::radians(state.rotation), glm::vec3(0.0f, 1.0f, 0.0f));
-            chairTransform = glm::scale(chairTransform, glm::vec3(state.scale, state.scale, state.scale));
+            chairTransform = glm::scale(chairTransform, glm::vec3(state.scale));
 
-            // Translate the floor and walls to their respective positions in the scene (so they stay unchanged)
-            floorTransform = glm::translate(floorTransform, glm::vec3(0.0f, 0.0f, 0.0f));
-            backWallTransform = glm::translate(backWallTransform, glm::vec3(0.0f, 0.0f, 0.0f));
-            rightWallTransform = glm::translate(rightWallTransform, glm::vec3(0.0f, 0.0f, 0.0f));
-            
             // Create a view matrix to simulate camera movement
             view = glm::lookAt(state.cameraPos, state.cameraPos + state.cameraFront, state.cameraUp);
 
@@ -193,27 +184,24 @@ int main() {
                 projection = glm::ortho(-1.5f * aspect, 1.5f * aspect, -1.5f, 1.5f, 0.1f, 100.0f);
             }
 
+            const glm::mat4 viewProjection = projection * view;
+            shader.setMat4("mvp", viewProjection * model * chairTransform);
+
             // Retrieve and pass the uniform locations for the view, and projection matrices
             // Using the function from Shader.h
-            shader.setMat4("view", view);
-            shader.setMat4("projection", projection);
+            // shader.setMat4("view", view);
+            // shader.setMat4("projection", projection);
 
             // Retrieve and pass the uniform location for the model matrix of the chair
-            glm::mat4 chairModel = model * chairTransform;
-            shader.setMat4("model", chairModel);
+            // glm::mat4 chairModel = model * chairTransform;
+            // shader.setMat4("model", chairModel);
             chair.Draw();
             
             // Draw the environment based on input
             if (state.environment) {
-                // Draw the floor and walls with their respective transformations
-                glm::mat4 floorModel = model * floorTransform;
-                shader.setMat4("model", floorModel);
+                shader.setMat4("mvp", viewProjection * model);
                 floor.Draw();
-                glm::mat4 backWallModel = model * backWallTransform;
-                shader.setMat4("model", backWallModel);
                 backWall.Draw();
-                glm::mat4 rightWallModel = model * rightWallTransform;
-                shader.setMat4("model", rightWallModel);
                 rightWall.Draw();
             }
 
