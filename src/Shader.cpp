@@ -9,7 +9,7 @@
 	https://learnopengl.com/Getting-started/Shaders
 */
 
-#include <Shader.h>
+#include <shader.h>
 #include <fstream>
 #include <sstream>
 #include <iostream>

@@ -27,6 +27,7 @@
     https://learnopengl.com/Model-Loading/Mesh
     https://learnopengl.com/Model-Loading/Model
 	https://learnopengl.com/Advanced-OpenGL/Anti-Aliasing
+*/
 
 // Libraries
 #include <GL/glew.h>
@@ -36,7 +37,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include <Shader.h>
+#include <shader.h>
 #include <model.h>
 #include "AppState.h"
 

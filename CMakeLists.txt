@@ -7,12 +7,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_executable(A3
     src/main.cpp
-    src/Shader.cpp
+    src/shader.cpp
     src/stb_image.cpp
+    src/mesh.cpp
+    src/model.cpp
 )
 
 target_include_directories(A3 PRIVATE
-    # Contains GL/glew.h, GLFW/glfw3.h, Shader.h, stb_image.h, Texture.h
+    # Contains GL/glew.h, GLFW/glfw3.h, shader.h, stb_image.h, mesh.h and model.h
     "${CMAKE_SOURCE_DIR}/include" #for portability
     "${CMAKE_SOURCE_DIR}/dependencies/include" #for local repo
 )
