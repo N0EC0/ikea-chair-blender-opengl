@@ -45,6 +45,7 @@ if (WIN32)
     target_link_libraries(A3 PRIVATE
         "${CMAKE_SOURCE_DIR}/dependencies/lib/glew32.lib"
         "${CMAKE_SOURCE_DIR}/dependencies/lib/glfw3.lib"
+        "${CMAKE_SOURCE_DIR}/dependencies/lib/assimp-vc145-mtd.lib"
         opengl32
     )
 endif()

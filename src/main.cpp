@@ -22,9 +22,11 @@
 
 	This project was made with the help of the following tutorials:
 	https://learnopengl.com/Getting-started/Hello-Triangle
-	https://learnopengl.com/Getting-started/Textures
 	https://learnopengl.com/Getting-started/Camera
-*/
+    https://learnopengl.com/Model-Loading/Assimp
+    https://learnopengl.com/Model-Loading/Mesh
+    https://learnopengl.com/Model-Loading/Model
+	https://learnopengl.com/Advanced-OpenGL/Anti-Aliasing
 
 // Libraries
 #include <GL/glew.h>
@@ -56,14 +58,19 @@ int main() {
     }
 
 	// Set GLFW window hints for OpenGL version and profile
-    //  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4); // Telling GLFW to use OpenGL version 4.x for Windows
-    //  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); // Telling GLFW to use OpenGL version 3.x for macOS
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+      glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4); // Telling GLFW to use OpenGL version 4.x for Windows
+      glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
+	//glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); // Telling GLFW to use OpenGL version 3.x for macOS
+ //   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	// For macOS compatibility
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+
+    // Antialisasing
+	glfwWindowHint(GLFW_SAMPLES, 4);
+	// z-buffer
+	glfwWindowHint(GLFW_DEPTH_BITS, 24);
 
 	// Create a GLFW window
     GLFWwindow* window = glfwCreateWindow(state.framebufferWidth, state.framebufferHeight, "COMP371 - Assignment 3", NULL, NULL);
@@ -99,11 +106,12 @@ int main() {
     glEnable(GL_DEPTH_TEST); // z-buffer
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK); // To not render back of polygon
+	glEnable(GL_MULTISAMPLE); // Enable antialiasing
     
     // Build and compile GLSL Shaders
     Shader shader("resources/shaders/model_shader.vs", "resources/shaders/model_shader.fs");
 
-    // load models
+	// Load the 3D models
     Model chair("resources/objects/chair.obj");
     Model floor("resources/objects/floor.obj");
     Model backWall("resources/objects/backWall.obj");
@@ -147,7 +155,7 @@ int main() {
         glm::mat4 view = glm::mat4(1.0f);
         glm::mat4 projection = glm::mat4(1.0f);
 
-        // Translate, rotate and scale down the world by 2 degrees on x axis
+        // Inititial adjustement: Translate, rotate and scale down the world
         model = glm::translate(model, glm::vec3(0.0f, -0.5f, 0.0f));
         model = glm::rotate(model, glm::radians(10.0f), glm::vec3(1.0f, 0.0f, 0.0f));
         model = glm::scale(model, glm::vec3(0.2f));
@@ -157,7 +165,7 @@ int main() {
         chairTransform = glm::rotate(chairTransform, glm::radians(state.rotation), glm::vec3(0.0f, 1.0f, 0.0f));
         chairTransform = glm::scale(chairTransform, glm::vec3(state.scale, state.scale, state.scale));
 
-        // Unchanged transform matrix for floor and walls
+		// Translate the floor and walls to their respective positions in the scene (so they stay unchanged)
         floorTransform = glm::translate(floorTransform, glm::vec3(0.0f, 0.0f, 0.0f));
         backWallTransform = glm::translate(backWallTransform, glm::vec3(0.0f, 0.0f, 0.0f));
         rightWallTransform = glm::translate(rightWallTransform, glm::vec3(0.0f, 0.0f, 0.0f));
@@ -180,18 +188,19 @@ int main() {
             projection = glm::ortho(-1.5f * aspect, 1.5f * aspect, -1.5f, 1.5f, 0.1f, 100.0f);
         }
 
-        // Retrieve and pass the uniform locations for the transformation, view, and projection matrices
+        // Retrieve and pass the uniform locations for the view, and projection matrices
         // Using the function from Shader.h
         shader.setMat4("view", view);
         shader.setMat4("projection", projection);
 
+		// Retrieve and pass the uniform location for the model matrix of the chair
         glm::mat4 chairModel = model * chairTransform;
         shader.setMat4("model", chairModel);
-        // Draw the chair
         chair.Draw(shader);
         
         // Draw the environment based on input
         if (state.environment) {
+			// Draw the floor and walls with their respective transformations
             glm::mat4 floorModel = model * floorTransform;
             shader.setMat4("model", floorModel);
             floor.Draw(shader);
@@ -238,19 +247,19 @@ void processInput(GLFWwindow* window, AppState& state)
     if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS) 
         state.wireframe = false;
 
-    // 3 - 4 keys to toggle to see chair only or with floor and walls
+    // 3, 4 keys to toggle to see chair only or with environment
     if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS) 
         state.environment = true;
     if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS) 
         state.environment = false;    
 
-	// O key to switch between perspective and orthogonal projections
+	// O key to switch between perspective and orthographic projections
     if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS) 
         state.perspective = false;   
     if (glfwGetKey(window, GLFW_KEY_O) == GLFW_RELEASE) 
         state.perspective = true;
 
-	// W, A, S, D keys to move the object in the scene
+	// W, A, S, D keys to move the chair in the scene
     float movementSpeed = 3.5f * state.deltaTime;
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) 
         state.distanceY += movementSpeed;
