@@ -1,5 +1,15 @@
+/*
+    COMP371 2261 CX - Assignment 3
+    Team members:
+    - Nerina An 40310293
+    - Noemie Corneillier 40284815
+    - Ryan Anthony Khireddine 40315218
 
-#include <GL/glew.h> // holds all OpenGL type declarations
+    This part was made with the help of this tutorial:
+    https://learnopengl.com/Model-Loading/Mesh
+*/
+
+#include <GL/glew.h>
 
 #include <mesh.h>
 
@@ -17,6 +27,7 @@ Mesh::~Mesh() {
     release();
 }
 
+// Move constructor
 Mesh::Mesh(Mesh&& other) 
     noexcept: VAO(other.VAO), VBO(other.VBO), EBO(other.EBO), 
     textureID(other.textureID), indexCount(other.indexCount) {
@@ -27,6 +38,7 @@ Mesh::Mesh(Mesh&& other)
     other.indexCount = 0;
 }
 
+//  Move assignment operator
 Mesh& Mesh::operator=(Mesh&& other) noexcept {
     if (this != &other) {
         release();
@@ -43,10 +55,10 @@ Mesh& Mesh::operator=(Mesh&& other) noexcept {
         other.textureID = 0;
         other.indexCount = 0;
     }
-
     return *this;
 }
 
+//  render the mesh
 void Mesh::Draw() const {
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, textureID);
@@ -61,7 +73,7 @@ void Mesh::setupMesh(
     const std::vector<Vertex>& vertices,
     const std::vector<unsigned int>& indices) {
     
-        // create buffers/arrays
+    // create buffers/arrays
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
@@ -70,11 +82,9 @@ void Mesh::setupMesh(
 
     // load data into vertex buffers
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    // A great thing about structs is that their memory layout is sequential for all its items.
-    // The effect is that we can simply pass a pointer to the struct and it translates perfectly to a glm::vec3/2 array which
-    // again translates to 3/2 floats which translates to a byte array.
+    // Structs memory layout is sequential for all its items
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
-
+	// load data into element buffer
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
 
@@ -88,6 +98,7 @@ void Mesh::setupMesh(
     glBindVertexArray(0);
 }
 
+//  properly de-allocates all resources once they are no longer needed
 void Mesh::release() {
     if (EBO != 0)
         glDeleteBuffers(1, &EBO);

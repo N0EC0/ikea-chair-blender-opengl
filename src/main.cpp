@@ -19,14 +19,8 @@
     Build and run with CMake on macOS:
     Cmake --build build && ./build/A3
 
-	This project was made with the help of the following tutorials:
-	https://learnopengl.com/Getting-started/Hello-Triangle
-    https://learnopengl.com/Getting-started/Shaders
-	https://learnopengl.com/Getting-started/Camera
-    https://learnopengl.com/Model-Loading/Assimp
-    https://learnopengl.com/Model-Loading/Mesh
-    https://learnopengl.com/Model-Loading/Model
-	https://learnopengl.com/Advanced-OpenGL/Anti-Aliasing
+	This project was made with the help of this resource:
+	https://learnopengl.com
 */
 
 // Libraries
