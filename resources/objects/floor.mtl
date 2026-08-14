@@ -1,0 +1,5 @@
+# Blender 5.2.0 LTS MTL File: 'COMP371_A3_IkeaChair.blend'
+# www.blender.org
+
+newmtl Material
+map_Kd floor_diffuse.jpg

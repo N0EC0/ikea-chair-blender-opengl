@@ -7,10 +7,7 @@ struct AppState
 {
     // Framebuffer window dimension for accurate aspect ratio
     int framebufferWidth = 1000;
-    int framebufferHeight = 1000;
-
-    // stores how much we're seeing of either texture
-    float mixValue = 0.0f;
+    int framebufferHeight = 800;
 
     // camera position and orientation
     glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
@@ -19,8 +16,12 @@ struct AppState
 
     // flag to display different projections
     bool perspective = true;
+    
     // flag to display wireframe of filled polygon
-    bool wireframe = false;
+    bool wireframe = true;
+
+    // flag to draw environment(floor and walls)
+    bool environment = false;
 
     // stores the initial moving distance 
     float distanceX = 0.0f;
@@ -28,13 +29,9 @@ struct AppState
 
     // stores the initial rotation angle 
     float rotation = 0.0f;
-    float targetRotation = 0.0f;
-    float rotationSpeed = 60.0f; // degrees per second so 0.5 seconds per turn
-    bool qWasPressed = false;
-    bool eWasPressed = false;
 
     // stores the initial scaling factor 
-    float depthScale = 1.0f;
+    float scale = 1.0f;
 
     // time between current frame and last frame
     float deltaTime = 0.0f;
