@@ -4,6 +4,52 @@ This project displays a textured 3D chair in OpenGL. The user can move, rotate, 
 
 Models are loaded with Assimp. The rendering pipeline uses vertex positions, texture coordinates, and one diffuse texture per mesh. Lighting, normal mapping, specular mapping, and skeletal animation are not implemented.
 
+## Blender Screenshots
+
+- Modelling Mesh View:
+
+  ![Modelling Mesh View](screenshots/modellingMeshView.png)
+    
+- Modelling Model View:
+    
+  ![Modelling Model View](screenshots/modellingModelView.png)
+    
+- Texture Maps:
+    
+  ![Texture Maps](screenshots/textureMaps.png)
+    
+- UV Unwraps:
+    
+  ![UV Unwraps](screenshots/uvUnwraps.png)
+    
+- Environment Textures:
+    
+  ![Environment Textures](screenshots/environmentTextures.png)
+    
+- Lighting Scene:
+    
+  ![Lighting Scene](screenshots/lightingScene.png)
+
+
+## OpenGL Screenshots
+
+- Translation:
+  
+  ![Translation](screenshots/translation.png)
+
+- Rotation:
+  
+  ![Rotation](screenshots/rotation.png)
+
+- Scaling:
+  
+  ![Scaling](screenshots/scaling.png)
+
+- Wireframe/Filled polygons:
+  
+  ![Wireframe/Filled polygons](screenshots/wireframe_filled_polygons.png)
+
+    
 ## Requirements
 
 - CMake 3.20 or newer
